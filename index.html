@@ -52,6 +52,9 @@
     margin:0 auto;
     padding: 40px 24px 100px;
   }
+  @media (max-width:640px){
+    .wrap{ padding: 20px 14px 70px; }
+  }
 
   /* ---------- Barra de eventos salvos ---------- */
   .topbar{
@@ -75,6 +78,16 @@
   }
   .topbar select{
     min-width:200px;
+  }
+  @media (max-width:640px){
+    .topbar{ padding:12px 14px; }
+    .topbar select, .topbar button, .topbar label{
+      flex:1 1 100%;
+      min-width:0;
+      width:100%;
+      text-align:center;
+    }
+    .topbar > div{ width:100%; }
   }
 
   /* ---------- Lights divider (signature element) ---------- */
@@ -166,6 +179,12 @@
   .seal .inner{ text-align:center; color:var(--ink); }
   .seal .num{ font-family:'Fraunces', serif; font-weight:700; font-size:34px; line-height:1; }
   .seal .lbl{ font-family:'IBM Plex Mono', monospace; font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; opacity:.75;}
+  @media (max-width:640px){
+    header.hero{ justify-content:center; text-align:center; }
+    header.hero p.sub{ max-width:100%; }
+    .seal{ width:100px; height:100px; margin:0 auto; }
+    .seal .num{ font-size:26px; }
+  }
 
   /* ---------- Card system ---------- */
   .card{
@@ -174,6 +193,11 @@
     border-radius: var(--radius);
     padding: 26px;
     box-shadow: 0 20px 40px -18px rgba(0,0,0,0.45);
+    max-width:100%;
+    overflow:hidden;
+  }
+  @media (max-width:640px){
+    .card{ padding:18px; border-radius:14px; }
   }
   .card.on-dusk{
     background: var(--dusk-2);
@@ -310,6 +334,20 @@
     border:1px solid #ecdfc4;
   }
   .row-item.donos{ grid-template-columns: 1.4fr 1fr 1fr auto auto; }
+  @media (max-width:640px){
+    .row-item, .row-item.donos{
+      grid-template-columns:unset;
+      display:flex;
+      flex-wrap:wrap;
+      row-gap:8px;
+      column-gap:10px;
+      padding:12px;
+    }
+    .row-item > div:first-child{ flex:1 1 100%; }
+    .row-item select{ flex:1 1 auto; min-width:0; max-width:100%; }
+    .row-item .pill{ flex:0 0 auto; }
+    .row-item > span{ flex:0 0 auto; margin-left:auto; }
+  }
   .card.on-dusk .row-item{
     background: rgba(251,246,234,0.05);
     border:1px solid var(--line);
@@ -359,6 +397,52 @@
     min-height:0;
   }
   .card.on-dusk .aviso-duplicidade{ color:#f0a99a; }
+
+  .sugestoes-convidado{
+    display:none;
+    flex-direction:column;
+    gap:4px;
+    margin-top:6px;
+    padding:8px;
+    border-radius:10px;
+    background: rgba(251,246,234,0.06);
+    border:1.5px solid rgba(251,246,234,0.2);
+  }
+  .sugestoes-convidado.ativo{ display:flex; }
+  .sugestoes-convidado .sug-titulo{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:2px;
+  }
+  .sugestoes-convidado .sug-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    padding:7px 9px;
+    border-radius:8px;
+    cursor:pointer;
+    background:transparent;
+    border:none;
+    color:var(--paper);
+    font-family:'Work Sans', sans-serif;
+    font-size:13px;
+    text-align:left;
+  }
+  .sugestoes-convidado .sug-item:hover{ background:rgba(251,246,234,0.1); }
+  .sugestoes-convidado .sug-item .sug-nome{ font-weight:600; }
+  .sugestoes-convidado .sug-item .sug-meta{ font-size:11.5px; color:var(--muted); white-space:nowrap; }
+
+  @media (max-width:640px){
+    .sugestoes-convidado .sug-item{
+      flex-wrap:wrap;
+      row-gap:2px;
+    }
+    .sugestoes-convidado .sug-item .sug-meta{ white-space:normal; }
+  }
 
   .section-head{
     display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
@@ -687,8 +771,9 @@
       <div class="grid-form" style="grid-template-columns: 1.4fr 0.7fr 1fr;">
         <div class="field">
           <label for="g-nome">Nome / família</label>
-          <input id="g-nome" type="text" placeholder="Ex: Família Oliveira" oninput="verificarDuplicidadeConvidado()">
+          <input id="g-nome" type="text" placeholder="Ex: Família Oliveira" oninput="verificarDuplicidadeConvidado()" autocomplete="off">
           <span class="aviso-duplicidade" id="aviso-duplicidade-convidado"></span>
+          <div class="sugestoes-convidado" id="sugestoes-convidado"></div>
         </div>
         <div class="field">
           <label for="g-qtd">Nº de pessoas</label>
@@ -1098,8 +1183,10 @@
         <div class="name">${escapeHtml(d.nome)}</div>
         <div class="meta">${escapeHtml(d.contato) || "—"}</div>
         <div class="meta">${escapeHtml(d.papel)}</div>
-        <button class="btn-edit-icon on-dusk" onclick="iniciarEdicaoDono('${d.id}')" title="Editar">✎</button>
-        <button class="btn-danger-icon on-dusk" onclick="removerDono('${d.id}')" title="Remover">✕</button>
+        <span style="display:flex; gap:2px;">
+          <button class="btn-edit-icon on-dusk" onclick="iniciarEdicaoDono('${d.id}')" title="Editar">✎</button>
+          <button class="btn-danger-icon on-dusk" onclick="removerDono('${d.id}')" title="Remover">✕</button>
+        </span>
       </div>
     `).join('');
   }
@@ -1122,6 +1209,8 @@
     }
     document.getElementById('g-nome').value = "";
     document.getElementById('g-qtd').value = 1;
+    document.getElementById('sugestoes-convidado').classList.remove('ativo');
+    document.getElementById('sugestoes-convidado').innerHTML = "";
     renderTudo();
   }
 
@@ -1135,6 +1224,9 @@
     document.getElementById('g-status').value = c.status;
     document.getElementById('btn-convidado').textContent = "Salvar edição";
     document.getElementById('banner-edicao-convidado').classList.add('ativo');
+    document.getElementById('sugestoes-convidado').classList.remove('ativo');
+    document.getElementById('sugestoes-convidado').innerHTML = "";
+    document.getElementById('aviso-duplicidade-convidado').textContent = "";
     document.getElementById('g-nome').focus();
   }
 
@@ -1146,6 +1238,8 @@
     document.getElementById('g-status').value = "pendente";
     document.getElementById('btn-convidado').textContent = "Adicionar convidado";
     document.getElementById('banner-edicao-convidado').classList.remove('ativo');
+    document.getElementById('sugestoes-convidado').classList.remove('ativo');
+    document.getElementById('sugestoes-convidado').innerHTML = "";
   }
 
   function removerConvidado(id){
@@ -1170,14 +1264,54 @@
     renderConvidados();
   }
 
+  function selecionarSugestaoConvidado(id){
+    iniciarEdicaoConvidado(id);
+    document.getElementById('sugestoes-convidado').classList.remove('ativo');
+    document.getElementById('aviso-duplicidade-convidado').textContent = "";
+  }
+
   function verificarDuplicidadeConvidado(){
     const aviso = document.getElementById('aviso-duplicidade-convidado');
-    const nomeDigitado = normalizarTexto(document.getElementById('g-nome').value);
-    if(!nomeDigitado){ aviso.textContent = ""; return; }
-    const existente = dadosAtuais().convidados.find(c =>
-      c.id !== editandoConvidadoId && normalizarTexto(c.nome) === nomeDigitado
-    );
-    aviso.textContent = existente ? `⚠ Já existe "${existente.nome}" na lista — confira antes de adicionar de novo.` : "";
+    const caixaSugestoes = document.getElementById('sugestoes-convidado');
+    const nomeDigitadoOriginal = document.getElementById('g-nome').value;
+    const nomeDigitado = normalizarTexto(nomeDigitadoOriginal);
+
+    if(!nomeDigitado){
+      aviso.textContent = "";
+      caixaSugestoes.classList.remove('ativo');
+      caixaSugestoes.innerHTML = "";
+      return;
+    }
+
+    const todos = dadosAtuais().convidados.filter(c => c.id !== editandoConvidadoId);
+
+    // Nome idêntico: aviso direto de duplicidade
+    const existenteExato = todos.find(c => normalizarTexto(c.nome) === nomeDigitado);
+    aviso.textContent = existenteExato ? `⚠ Já existe "${existenteExato.nome}" na lista — confira antes de adicionar de novo.` : "";
+
+    // Nomes parecidos (mesmo sem ser idênticos): ajuda a não esquecer quem já foi cadastrado
+    const parecidos = todos.filter(c => {
+      const nomeSalvo = normalizarTexto(c.nome);
+      return nomeSalvo !== nomeDigitado &&
+        (nomeSalvo.includes(nomeDigitado) || nomeDigitado.includes(nomeSalvo));
+    }).slice(0, 5);
+
+    if(parecidos.length === 0){
+      caixaSugestoes.classList.remove('ativo');
+      caixaSugestoes.innerHTML = "";
+      return;
+    }
+
+    caixaSugestoes.classList.add('ativo');
+    caixaSugestoes.innerHTML = `
+      <div class="sug-titulo">Convidados parecidos já cadastrados</div>
+      ${parecidos.map(c => `
+        <button type="button" class="sug-item" onclick="selecionarSugestaoConvidado('${c.id}')">
+          <span class="sug-nome">${escapeHtml(c.nome)}</span>
+          <span class="sug-meta">${escapeHtml(c.categoria)} · ${c.qtd} ${c.qtd===1?'pessoa':'pessoas'} · ${c.status}</span>
+        </button>
+      `).join('')}
+    `;
   }
 
   function renderConvidados(){
