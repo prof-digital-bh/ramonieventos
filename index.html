@@ -333,6 +333,33 @@
 
   .empty-msg{ padding:30px 10px; text-align:center; color:#a898c2; font-size:14px; }
 
+  /* ---------- Pesquisa de convidados ---------- */
+  .search-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background: rgba(251,246,234,0.06);
+    border:1.5px solid rgba(251,246,234,0.2);
+    border-radius:10px;
+    padding:4px 14px;
+    margin-top:4px;
+  }
+  .search-row .search-icon{ font-size:14px; opacity:.7; }
+  .search-row input{
+    flex:1;
+    border:none;
+    background:transparent;
+    padding:9px 0;
+  }
+  .search-row input:focus{ outline:none; }
+  .aviso-duplicidade{
+    font-size:12px;
+    color:var(--coral);
+    font-weight:600;
+    min-height:0;
+  }
+  .card.on-dusk .aviso-duplicidade{ color:#f0a99a; }
+
   .section-head{
     display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
     margin-bottom:20px;
@@ -660,7 +687,8 @@
       <div class="grid-form" style="grid-template-columns: 1.4fr 0.7fr 1fr;">
         <div class="field">
           <label for="g-nome">Nome / família</label>
-          <input id="g-nome" type="text" placeholder="Ex: Família Oliveira">
+          <input id="g-nome" type="text" placeholder="Ex: Família Oliveira" oninput="verificarDuplicidadeConvidado()">
+          <span class="aviso-duplicidade" id="aviso-duplicidade-convidado"></span>
         </div>
         <div class="field">
           <label for="g-qtd">Nº de pessoas</label>
@@ -691,6 +719,13 @@
           <button class="btn-primary on-dusk-btn" id="btn-convidado" onclick="salvarConvidado()">Adicionar convidado</button>
         </div>
       </div>
+
+      <div class="search-row">
+        <span class="search-icon">🔎</span>
+        <input id="busca-convidados" type="text" placeholder="Pesquisar convidado já cadastrado por nome ou categoria..." oninput="renderConvidados()">
+        <button class="btn-ghost on-dusk" id="btn-limpar-busca-convidados" onclick="limparBuscaConvidados()" style="display:none;">Limpar</button>
+      </div>
+      <p class="hint" id="contagem-busca-convidados" style="margin:8px 0 0;"></p>
 
       <div class="list" id="lista-convidados" style="margin-top:6px;"></div>
 
@@ -1126,11 +1161,46 @@
     renderTudo();
   }
 
+  function normalizarTexto(str){
+    return (str || "").toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+  }
+
+  function limparBuscaConvidados(){
+    document.getElementById('busca-convidados').value = "";
+    renderConvidados();
+  }
+
+  function verificarDuplicidadeConvidado(){
+    const aviso = document.getElementById('aviso-duplicidade-convidado');
+    const nomeDigitado = normalizarTexto(document.getElementById('g-nome').value);
+    if(!nomeDigitado){ aviso.textContent = ""; return; }
+    const existente = dadosAtuais().convidados.find(c =>
+      c.id !== editandoConvidadoId && normalizarTexto(c.nome) === nomeDigitado
+    );
+    aviso.textContent = existente ? `⚠ Já existe "${existente.nome}" na lista — confira antes de adicionar de novo.` : "";
+  }
+
   function renderConvidados(){
     const el = document.getElementById('lista-convidados');
-    const convidados = dadosAtuais().convidados;
-    if(convidados.length === 0){
+    const todos = dadosAtuais().convidados;
+    const termo = normalizarTexto(document.getElementById('busca-convidados').value);
+    const convidados = termo
+      ? todos.filter(c => normalizarTexto(c.nome).includes(termo) || normalizarTexto(c.categoria).includes(termo))
+      : todos;
+
+    const btnLimpar = document.getElementById('btn-limpar-busca-convidados');
+    const contagem = document.getElementById('contagem-busca-convidados');
+    btnLimpar.style.display = termo ? 'inline-block' : 'none';
+    contagem.textContent = termo
+      ? `${convidados.length} de ${todos.length} convidado(s) encontrado(s) para "${document.getElementById('busca-convidados').value}"`
+      : "";
+
+    if(todos.length === 0){
       el.innerHTML = `<div class="empty-msg">Nenhum convidado ainda. Adicione o primeiro acima.</div>`;
+      return;
+    }
+    if(convidados.length === 0){
+      el.innerHTML = `<div class="empty-msg">Nenhum convidado encontrado para essa busca.</div>`;
       return;
     }
     el.innerHTML = convidados.map(c => `
