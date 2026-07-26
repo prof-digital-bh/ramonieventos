@@ -409,6 +409,41 @@
   }
   .card.on-dusk .aviso-duplicidade{ color:#f0a99a; }
 
+  /* ---------- Seção recolhível (ex: convidados já cadastrados) ---------- */
+  .collapse-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:14px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .collapse-header:focus-visible{
+    outline: 2.5px solid var(--amber-dim);
+    outline-offset:4px;
+    border-radius:8px;
+  }
+  .collapse-chevron{
+    font-size:18px;
+    color:var(--muted);
+    transition: transform .25s ease;
+    flex-shrink:0;
+    line-height:1;
+  }
+  .collapse-chevron.recolhido{ transform: rotate(-90deg); }
+  .collapse-body{
+    overflow:hidden;
+    max-height:2000px;
+    opacity:1;
+    margin-top:18px;
+    transition: max-height .3s ease, opacity .2s ease, margin-top .3s ease;
+  }
+  .collapse-body.recolhido{
+    max-height:0;
+    opacity:0;
+    margin-top:0;
+  }
+
   .sugestoes-convidado{
     display:none;
     flex-direction:column;
@@ -793,7 +828,7 @@
     <div class="card on-dusk">
       <div class="section-head">
         <div>
-          <h2>Convidados</h2>
+          <h2>Adicionar convidado</h2>
           <p class="hint">Cadastre cada família ou convidado e quantas pessoas ele representa.</p>
         </div>
       </div>
@@ -839,18 +874,32 @@
           <button class="btn-primary on-dusk-btn" id="btn-convidado" onclick="salvarConvidado()">Adicionar convidado</button>
         </div>
       </div>
+    </div>
 
-      <div class="search-row">
-        <span class="search-icon">🔎</span>
-        <input id="busca-convidados" type="text" placeholder="Pesquisar convidado já cadastrado por nome ou categoria..." oninput="renderConvidados()">
-        <button class="btn-ghost on-dusk" id="btn-limpar-busca-convidados" onclick="limparBuscaConvidados()" style="display:none;">Limpar</button>
+    <div class="card on-dusk" style="margin-top:18px;">
+      <div class="collapse-header" id="cabecalho-convidados-cadastrados" role="button" tabindex="0" aria-expanded="true" aria-controls="corpo-convidados-cadastrados"
+        onclick="alternarSecaoRecolhivel('convidados-cadastrados')"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); alternarSecaoRecolhivel('convidados-cadastrados');}">
+        <div>
+          <h2 style="margin:0;">Convidados já cadastrados</h2>
+          <p class="hint" style="margin:4px 0 0;">Pesquise por nome ou categoria, acompanhe o status e edite quem já foi cadastrado.</p>
+        </div>
+        <span class="collapse-chevron" id="chevron-convidados-cadastrados">▾</span>
       </div>
-      <p class="hint" id="contagem-busca-convidados" style="margin:8px 0 0;"></p>
 
-      <div class="list" id="lista-convidados" style="margin-top:6px;"></div>
+      <div class="collapse-body" id="corpo-convidados-cadastrados">
+        <div class="search-row">
+          <span class="search-icon">🔎</span>
+          <input id="busca-convidados" type="text" placeholder="Pesquisar convidado já cadastrado por nome ou categoria..." oninput="renderConvidados()">
+          <button class="btn-ghost on-dusk" id="btn-limpar-busca-convidados" onclick="limparBuscaConvidados()" style="display:none;">Limpar</button>
+        </div>
+        <p class="hint" id="contagem-busca-convidados" style="margin:8px 0 0;"></p>
 
-      <div style="margin-top:18px; text-align:right;">
-        <button class="btn-secondary btn-small" onclick="gerarRelatorioConvidados()">Gerar ficha de convidados</button>
+        <div class="list" id="lista-convidados" style="margin-top:6px;"></div>
+
+        <div style="margin-top:18px; text-align:right;">
+          <button class="btn-secondary btn-small" onclick="gerarRelatorioConvidados()">Gerar ficha de convidados</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1392,9 +1441,10 @@
     const el = document.getElementById('lista-convidados');
     const todos = dadosAtuais().convidados;
     const termo = normalizarTexto(document.getElementById('busca-convidados').value);
-    const convidados = termo
+    const convidados = (termo
       ? todos.filter(c => normalizarTexto(c.nome).includes(termo) || normalizarTexto(c.categoria).includes(termo))
-      : todos;
+      : todos.slice()
+    ).sort((a, b) => normalizarTexto(a.nome).localeCompare(normalizarTexto(b.nome), 'pt-BR'));
 
     const btnLimpar = document.getElementById('btn-limpar-busca-convidados');
     const contagem = document.getElementById('contagem-busca-convidados');
@@ -1517,6 +1567,16 @@
   }
 
   // ==================== ABAS ====================
+  function alternarSecaoRecolhivel(id){
+    const corpo = document.getElementById('corpo-' + id);
+    const chevron = document.getElementById('chevron-' + id);
+    const cabecalho = document.getElementById('cabecalho-' + id);
+    if(!corpo) return;
+    const recolhido = corpo.classList.toggle('recolhido');
+    if(chevron) chevron.classList.toggle('recolhido', recolhido);
+    if(cabecalho) cabecalho.setAttribute('aria-expanded', recolhido ? 'false' : 'true');
+  }
+
   function mostrarAba(nome){
     ['dados','convidados','gastos'].forEach(n => {
       document.getElementById('aba-' + n).classList.toggle('ativo', n === nome);
@@ -1567,6 +1627,7 @@
     const dados = dadosAtuais();
     const grupos = { confirmado: [], pendente: [], recusado: [] };
     dados.convidados.forEach(c => grupos[c.status].push(c));
+    Object.keys(grupos).forEach(k => grupos[k].sort((a,b) => normalizarTexto(a.nome).localeCompare(normalizarTexto(b.nome), 'pt-BR')));
 
     const totalGeral = dados.convidados.reduce((s,c)=>s+c.qtd,0);
     const nomesGrupo = { confirmado: "Confirmados", pendente: "Pendentes", recusado: "Recusados" };
