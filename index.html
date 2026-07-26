@@ -79,6 +79,16 @@
   .topbar select{
     min-width:200px;
   }
+  .status-salvo{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color: var(--sage);
+    opacity:0;
+    transition: opacity .4s ease;
+    margin-left:auto;
+    white-space:nowrap;
+  }
+  .status-salvo.visivel{ opacity:1; }
   @media (max-width:640px){
     .topbar{ padding:12px 14px; }
     .topbar select, .topbar button, .topbar label{
@@ -88,6 +98,7 @@
       text-align:center;
     }
     .topbar > div{ width:100%; }
+    .status-salvo{ flex:1 1 100%; text-align:center; margin-left:0; }
   }
 
   /* ---------- Lights divider (signature element) ---------- */
@@ -589,6 +600,7 @@
     <button class="btn-secondary btn-small" onclick="novoEvento()">+ Novo evento</button>
     <button class="btn-primary on-dusk-btn btn-small" onclick="salvarEventoAtual()">Salvar evento</button>
     <button class="btn-ghost on-dusk btn-small" onclick="excluirEventoAtual()">Excluir este evento</button>
+    <span class="status-salvo" id="status-salvo-navegador"></span>
   </div>
 
   <div class="topbar" style="justify-content:space-between;">
@@ -904,6 +916,45 @@
   let editandoConvidadoId = null;
   let editandoGastoId = null;
   let editandoDonoId = null;
+
+  // ==================== PERSISTÊNCIA NO NAVEGADOR ====================
+  const CHAVE_ARMAZENAMENTO = 'ficha-da-festa:dados-v1';
+
+  function salvarNoNavegador(){
+    try{
+      localStorage.setItem(CHAVE_ARMAZENAMENTO, JSON.stringify({ eventos, eventoAtualNome }));
+      mostrarStatusSalvo();
+    }catch(err){
+      console.error('Não foi possível salvar no navegador:', err);
+    }
+  }
+
+  function carregarDoNavegador(){
+    try{
+      const bruto = localStorage.getItem(CHAVE_ARMAZENAMENTO);
+      if(!bruto) return false;
+      const obj = JSON.parse(bruto);
+      if(!obj || !obj.eventos || Object.keys(obj.eventos).length === 0) return false;
+      eventos = obj.eventos;
+      eventoAtualNome = (obj.eventoAtualNome && obj.eventos[obj.eventoAtualNome])
+        ? obj.eventoAtualNome
+        : Object.keys(obj.eventos)[0];
+      return true;
+    }catch(err){
+      console.error('Não foi possível carregar dados salvos do navegador:', err);
+      return false;
+    }
+  }
+
+  let timeoutStatusSalvo = null;
+  function mostrarStatusSalvo(){
+    const el = document.getElementById('status-salvo-navegador');
+    if(!el) return;
+    el.textContent = "✓ Salvo neste navegador às " + new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    el.classList.add('visivel');
+    clearTimeout(timeoutStatusSalvo);
+    timeoutStatusSalvo = setTimeout(() => el.classList.remove('visivel'), 2500);
+  }
 
   function novoIdEvento(){
     const base = new Date();
@@ -1563,10 +1614,13 @@
     renderConvidados();
     renderGastos();
     renderResumo();
+    salvarNoNavegador();
   }
 
   // ==================== INICIALIZAÇÃO ====================
-  seedEventoExemplo();
+  if(!carregarDoNavegador()){
+    seedEventoExemplo();
+  }
   renderSeletorEventos();
   carregarFormularios();
   renderTudo();
