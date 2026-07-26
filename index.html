@@ -433,15 +433,9 @@
   .collapse-chevron.recolhido{ transform: rotate(-90deg); }
   .collapse-body{
     overflow:hidden;
-    max-height:2000px;
     opacity:1;
     margin-top:18px;
     transition: max-height .3s ease, opacity .2s ease, margin-top .3s ease;
-  }
-  .collapse-body.recolhido{
-    max-height:0;
-    opacity:0;
-    margin-top:0;
   }
 
   .sugestoes-convidado{
@@ -1572,9 +1566,34 @@
     const chevron = document.getElementById('chevron-' + id);
     const cabecalho = document.getElementById('cabecalho-' + id);
     if(!corpo) return;
-    const recolhido = corpo.classList.toggle('recolhido');
-    if(chevron) chevron.classList.toggle('recolhido', recolhido);
-    if(cabecalho) cabecalho.setAttribute('aria-expanded', recolhido ? 'false' : 'true');
+
+    const estaAberto = corpo.dataset.aberto !== 'false';
+
+    if(estaAberto){
+      // Fechar: fixa a altura atual (sem limite artificial) e então anima até 0
+      corpo.style.maxHeight = corpo.scrollHeight + 'px';
+      corpo.offsetHeight; // força o navegador a registrar o valor acima antes de mudar
+      corpo.style.maxHeight = '0px';
+      corpo.style.opacity = '0';
+      corpo.style.marginTop = '0px';
+      corpo.dataset.aberto = 'false';
+    } else {
+      // Abrir: mede a altura real do conteúdo (funciona mesmo estando com max-height:0)
+      // e anima até lá; depois libera para "none" para nunca mais cortar conteúdo que cresça.
+      corpo.style.maxHeight = corpo.scrollHeight + 'px';
+      corpo.style.opacity = '1';
+      corpo.style.marginTop = '18px';
+      corpo.dataset.aberto = 'true';
+      const liberarAltura = (e) => {
+        if(e && e.propertyName !== 'max-height') return;
+        if(corpo.dataset.aberto === 'true') corpo.style.maxHeight = 'none';
+        corpo.removeEventListener('transitionend', liberarAltura);
+      };
+      corpo.addEventListener('transitionend', liberarAltura);
+    }
+
+    if(chevron) chevron.classList.toggle('recolhido', estaAberto);
+    if(cabecalho) cabecalho.setAttribute('aria-expanded', estaAberto ? 'false' : 'true');
   }
 
   function mostrarAba(nome){
@@ -1610,7 +1629,7 @@
     fill.style.width = pct + "%";
     fill.classList.toggle('over', gastoTotal > orcamento);
 
-    document.getElementById('tab-count-convidados').textContent = dados.convidados.length;
+    document.getElementById('tab-count-convidados').textContent = totalPessoas;
     document.getElementById('tab-count-gastos').textContent = dados.gastos.length;
   }
 
