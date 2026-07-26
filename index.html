@@ -468,13 +468,17 @@
   }
   @media (max-width: 880px){ .two-col{ grid-template-columns: 1fr; } }
 
-  /* ---------- Abas: Convidados / Gastos ---------- */
+  /* ---------- Abas: Dados da festa / Convidados / Gastos ---------- */
   .tabs-nav{
     display:flex;
     gap:6px;
     border-bottom:1px solid var(--line);
     margin-bottom:24px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
   }
+  .tabs-nav::-webkit-scrollbar{ display:none; }
   .tab-btn{
     background:transparent;
     border:none;
@@ -491,6 +495,8 @@
     align-items:center;
     gap:8px;
     transition: color .15s ease;
+    white-space:nowrap;
+    flex:0 0 auto;
   }
   .tab-btn:hover{ color:var(--paper); }
   .tab-btn.ativo{ color:var(--amber); border-bottom-color:var(--amber); }
@@ -508,8 +514,18 @@
   .tab-panel.ativo{ display:block; animation: apareceAba .25s ease; }
   @keyframes apareceAba{ from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:none;} }
   @media (prefers-reduced-motion: reduce){ .tab-panel.ativo{ animation:none; } }
-  @media (max-width:480px){
-    .tab-btn{ font-size:16px; padding:8px 12px 12px; }
+  @media (max-width:640px){
+    .tabs-nav{
+      gap:2px;
+      margin: 0 -14px 20px;
+      padding: 0 14px 0;
+      justify-content:flex-start;
+    }
+    .tab-btn{ font-size:15px; padding:8px 12px 12px; gap:6px; }
+    .tab-count{ font-size:11px; padding:2px 6px; }
+  }
+  @media (min-width:641px){
+    .tabs-nav{ justify-content:flex-start; }
   }
 
   .edit-banner{
@@ -633,8 +649,59 @@
     </div>
   </header>
 
+  <!-- Lights divider -->
+  <div class="lights" aria-hidden="true">
+    <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+    <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+    <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+    <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+  </div>
+
+  <!-- Painel de resumo -->
+  <div class="stats">
+    <div class="stat">
+      <div class="lbl">Convidados confirmados</div>
+      <div class="val mono" id="stat-confirmados">0</div>
+    </div>
+    <div class="stat">
+      <div class="lbl">Total de pessoas esperadas</div>
+      <div class="val mono" id="stat-total-pessoas">0</div>
+    </div>
+    <div class="stat">
+      <div class="lbl">Gasto total</div>
+      <div class="val mono" id="stat-gasto">R$ 0</div>
+    </div>
+    <div class="stat" id="stat-saldo-box">
+      <div class="lbl">Saldo do orçamento</div>
+      <div class="val mono" id="stat-saldo">R$ 0</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:40px;">
+    <h2>Orçamento</h2>
+    <p class="hint" id="orcamento-texto">R$ 0 gastos de R$ 0 previstos</p>
+    <div class="budget-bar-track">
+      <div class="budget-bar-fill" id="budget-fill" style="width:0%;"></div>
+    </div>
+  </div>
+
+  <!-- Dados da festa / Convidados / Gastos em abas -->
+  <div class="tabs-nav">
+    <button class="tab-btn ativo" id="tabbtn-dados" onclick="mostrarAba('dados')">
+      Dados da festa
+    </button>
+    <button class="tab-btn" id="tabbtn-convidados" onclick="mostrarAba('convidados')">
+      Convidados <span class="tab-count" id="tab-count-convidados">0</span>
+    </button>
+    <button class="tab-btn" id="tabbtn-gastos" onclick="mostrarAba('gastos')">
+      Gastos <span class="tab-count" id="tab-count-gastos">0</span>
+    </button>
+  </div>
+
+  <!-- DADOS DA FESTA -->
+  <div class="tab-panel ativo" id="aba-dados">
   <!-- Formulário de dados do evento -->
-  <div class="card" style="margin-top:22px;">
+  <div class="card">
     <h2>Dados da festa</h2>
     <p class="hint">Preencha as informações principais — elas atualizam a ficha acima na hora. Clique em "Salvar evento" na barra de cima para guardar tudo com o nome da festa.</p>
     <div class="grid-form">
@@ -719,54 +786,10 @@
     <div class="list" id="lista-donos"></div>
   </div>
 
-  <!-- Lights divider -->
-  <div class="lights" aria-hidden="true">
-    <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
-    <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
-    <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
-    <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
-  </div>
-
-  <!-- Painel de resumo -->
-  <div class="stats">
-    <div class="stat">
-      <div class="lbl">Convidados confirmados</div>
-      <div class="val mono" id="stat-confirmados">0</div>
-    </div>
-    <div class="stat">
-      <div class="lbl">Total de pessoas esperadas</div>
-      <div class="val mono" id="stat-total-pessoas">0</div>
-    </div>
-    <div class="stat">
-      <div class="lbl">Gasto total</div>
-      <div class="val mono" id="stat-gasto">R$ 0</div>
-    </div>
-    <div class="stat" id="stat-saldo-box">
-      <div class="lbl">Saldo do orçamento</div>
-      <div class="val mono" id="stat-saldo">R$ 0</div>
-    </div>
-  </div>
-
-  <div class="card" style="margin-bottom:40px;">
-    <h2>Orçamento</h2>
-    <p class="hint" id="orcamento-texto">R$ 0 gastos de R$ 0 previstos</p>
-    <div class="budget-bar-track">
-      <div class="budget-bar-fill" id="budget-fill" style="width:0%;"></div>
-    </div>
-  </div>
-
-  <!-- Convidados e Gastos em abas -->
-  <div class="tabs-nav">
-    <button class="tab-btn ativo" id="tabbtn-convidados" onclick="mostrarAba('convidados')">
-      Convidados <span class="tab-count" id="tab-count-convidados">0</span>
-    </button>
-    <button class="tab-btn" id="tabbtn-gastos" onclick="mostrarAba('gastos')">
-      Gastos <span class="tab-count" id="tab-count-gastos">0</span>
-    </button>
   </div>
 
   <!-- CONVIDADOS -->
-  <div class="tab-panel ativo" id="aba-convidados">
+  <div class="tab-panel" id="aba-convidados">
     <div class="card on-dusk">
       <div class="section-head">
         <div>
@@ -1495,7 +1518,7 @@
 
   // ==================== ABAS ====================
   function mostrarAba(nome){
-    ['convidados','gastos'].forEach(n => {
+    ['dados','convidados','gastos'].forEach(n => {
       document.getElementById('aba-' + n).classList.toggle('ativo', n === nome);
       document.getElementById('tabbtn-' + n).classList.toggle('ativo', n === nome);
     });
