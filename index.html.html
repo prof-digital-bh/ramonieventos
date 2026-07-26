@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha da Festa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#221830;
+    --ink-2:#2c1f3f;
+    --dusk:#3b2856;
+    --dusk-2:#4a3468;
+    --paper:#fbf6ea;
+    --paper-dim:#f2ead9;
+    --amber:#f2a93b;
+    --amber-dim:#c98a2e;
+    --coral:#e2604b;
+    --sage:#6b9080;
+    --sage-dim:#4f7361;
+    --muted:#a898c2;
+    --text-dark:#2b2233;
+    --line: rgba(251,246,234,0.14);
+    --radius: 18px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, #4a3468 0%, transparent 60%),
+      radial-gradient(ellipse 700px 400px at 100% 0%, #563a70 0%, transparent 55%),
+      var(--ink);
+    color:var(--paper);
+    font-family:'Work Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+
+  h1,h2,h3, .display{
+    font-family:'Fraunces', serif;
+    font-optical-sizing:auto;
+    letter-spacing:-0.01em;
+  }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{color:inherit;}
+
+  .wrap{
+    max-width:1120px;
+    margin:0 auto;
+    padding: 40px 24px 100px;
+  }
+
+  /* ---------- Barra de eventos salvos ---------- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    background: var(--dusk-2);
+    border:1px solid var(--line);
+    border-radius: 14px;
+    padding:14px 18px;
+    margin-bottom:26px;
+  }
+  .topbar .eyebrow-inline{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-right:4px;
+  }
+  .topbar select{
+    min-width:200px;
+  }
+
+  /* ---------- Lights divider (signature element) ---------- */
+  .lights{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding: 6px 6px;
+    margin: 44px 0 40px;
+    position:relative;
+  }
+  .lights::before{
+    content:"";
+    position:absolute;
+    left:0; right:0; top:50%;
+    height:1px;
+    background: linear-gradient(90deg, transparent, rgba(242,169,59,0.55) 8%, rgba(242,169,59,0.55) 92%, transparent);
+    transform:translateY(-9px);
+  }
+  .bulb{
+    width:9px; height:12px;
+    border-radius:50% 50% 55% 55%;
+    background: var(--amber);
+    box-shadow: 0 0 8px 2px rgba(242,169,59,0.55);
+    animation: twinkle 3.4s ease-in-out infinite;
+    position:relative; z-index:1;
+  }
+  .bulb:nth-child(3n){ animation-delay:.6s; }
+  .bulb:nth-child(4n){ animation-delay:1.3s; background:#f7c473; }
+  .bulb:nth-child(5n){ animation-delay:2s; }
+  @keyframes twinkle{
+    0%,100%{ opacity:.55; box-shadow:0 0 6px 1px rgba(242,169,59,0.35);}
+    50%{ opacity:1; box-shadow:0 0 12px 4px rgba(242,169,59,0.7);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .bulb{ animation:none; opacity:.85; }
+  }
+
+  /* ---------- Header / invitation card ---------- */
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin:0 0 10px;
+  }
+  header.hero{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:32px;
+    flex-wrap:wrap;
+  }
+  header.hero h1{
+    font-size:clamp(32px, 5vw, 52px);
+    font-weight:600;
+    margin:0;
+    color:var(--paper);
+  }
+  header.hero p.sub{
+    color:var(--muted);
+    font-size:16px;
+    margin:10px 0 0;
+    max-width:520px;
+  }
+  header.hero p.donos-linha{
+    color:var(--amber);
+    font-size:13.5px;
+    margin:12px 0 0;
+    font-weight:600;
+  }
+
+  .seal{
+    width:130px; height:130px;
+    border-radius:50%;
+    background: conic-gradient(from 200deg, var(--amber), #f7c473, var(--amber));
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    box-shadow: 0 10px 30px rgba(242,169,59,0.25), inset 0 0 0 6px rgba(34,24,48,0.15);
+    position:relative;
+  }
+  .seal::after{
+    content:"";
+    position:absolute; inset:9px;
+    border-radius:50%;
+    border: 1.5px dashed rgba(34,24,48,0.35);
+  }
+  .seal .inner{ text-align:center; color:var(--ink); }
+  .seal .num{ font-family:'Fraunces', serif; font-weight:700; font-size:34px; line-height:1; }
+  .seal .lbl{ font-family:'IBM Plex Mono', monospace; font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; opacity:.75;}
+
+  /* ---------- Card system ---------- */
+  .card{
+    background: var(--paper);
+    color: var(--text-dark);
+    border-radius: var(--radius);
+    padding: 26px;
+    box-shadow: 0 20px 40px -18px rgba(0,0,0,0.45);
+  }
+  .card.on-dusk{
+    background: var(--dusk-2);
+    color: var(--paper);
+    box-shadow:none;
+    border:1px solid var(--line);
+  }
+  .card h2{ font-size:22px; margin:0 0 4px; font-weight:600; }
+  .card .hint{ font-size:13px; color: #756a86; margin:0 0 20px; }
+  .card.on-dusk .hint{ color: var(--muted); }
+
+  .grid-form{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+    gap:14px;
+    margin-bottom:16px;
+  }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field label{
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:#8a7f97;
+    font-weight:600;
+  }
+  .card.on-dusk .field label{ color:var(--muted); }
+
+  input, select{
+    font-family:'Work Sans', sans-serif;
+    font-size:14.5px;
+    padding:10px 12px;
+    border-radius:10px;
+    border:1.5px solid #e6ddc9;
+    background:#fffdf8;
+    color:var(--text-dark);
+    outline-offset:2px;
+  }
+  input:focus, select:focus, button:focus-visible{
+    outline: 2.5px solid var(--amber-dim);
+  }
+  .card.on-dusk input, .card.on-dusk select{
+    background: rgba(251,246,234,0.06);
+    border:1.5px solid rgba(251,246,234,0.2);
+    color: var(--paper);
+  }
+  .card.on-dusk input::placeholder{ color:rgba(251,246,234,0.4); }
+  .topbar select, .topbar input{
+    background: rgba(251,246,234,0.06);
+    border:1.5px solid rgba(251,246,234,0.2);
+    color: var(--paper);
+  }
+
+  button{
+    font-family:'Work Sans', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    border:none;
+    border-radius:10px;
+    padding:11px 20px;
+    cursor:pointer;
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  button:active{ transform: scale(.97); }
+  .btn-primary{ background: var(--ink); color: var(--paper); }
+  .btn-primary:hover{ box-shadow:0 6px 18px rgba(34,24,48,0.35); }
+  .btn-primary.on-dusk-btn{ background: var(--amber); color:var(--ink); }
+  .btn-secondary{
+    background:transparent;
+    border:1.5px solid var(--amber);
+    color:var(--amber);
+    padding:9px 16px;
+  }
+  .btn-ghost{
+    background:transparent;
+    color:#8a7f97;
+    padding:6px 10px;
+    font-size:13px;
+    text-decoration:underline;
+  }
+  .btn-ghost.on-dusk{ color: var(--muted); }
+  .btn-danger-icon{ background:transparent; color:#b95a49; font-size:16px; padding:4px 8px; }
+  .btn-danger-icon.on-dusk{ color:#f0a99a; }
+  .btn-edit-icon{ background:transparent; color:#a3721f; font-size:15px; padding:4px 8px; }
+  .btn-edit-icon.on-dusk{ color:#f7c473; }
+  .btn-small{ font-size:12.5px; padding:8px 14px; }
+
+  /* ---------- stat row ---------- */
+  .stats{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:16px;
+    margin: 40px 0;
+  }
+  .stat{
+    background: var(--dusk-2);
+    border:1px solid var(--line);
+    border-radius: var(--radius);
+    padding:20px 22px;
+  }
+  .stat .lbl{
+    font-size:12px; text-transform:uppercase; letter-spacing:.07em;
+    color:var(--muted); margin-bottom:8px; font-weight:600;
+  }
+  .stat .val{ font-family:'Fraunces', serif; font-size:30px; font-weight:600; }
+  .stat.warn .val{ color: var(--coral); }
+  .stat.good .val{ color: #9fd8bd; }
+  @media (max-width:820px){ .stats{ grid-template-columns: repeat(2,1fr);} }
+
+  /* ---------- budget bar ---------- */
+  .budget-bar-track{
+    width:100%; height:12px; border-radius:20px;
+    background: rgba(251,246,234,0.08);
+    overflow:hidden;
+    margin-top:6px;
+  }
+  .budget-bar-fill{
+    height:100%;
+    background: linear-gradient(90deg, var(--sage), #9fd8bd);
+    border-radius:20px;
+    transition: width .4s ease, background .4s ease;
+  }
+  .budget-bar-fill.over{ background: linear-gradient(90deg, var(--coral), #f2907d); }
+
+  /* ---------- lists / tables ---------- */
+  .list{ display:flex; flex-direction:column; gap:10px; }
+  .row-item{
+    display:grid;
+    grid-template-columns: 1.6fr 1fr 1fr 0.9fr auto auto;
+    align-items:center;
+    gap:10px;
+    padding:12px 14px;
+    border-radius:12px;
+    background:#fffdf8;
+    border:1px solid #ecdfc4;
+  }
+  .row-item.donos{ grid-template-columns: 1.4fr 1fr 1fr auto auto; }
+  .card.on-dusk .row-item{
+    background: rgba(251,246,234,0.05);
+    border:1px solid var(--line);
+  }
+  .row-item .name{ font-weight:600; }
+  .row-item .meta{ font-size:12.5px; color:#8a7f97; }
+  .card.on-dusk .row-item .meta{ color:var(--muted); }
+  .pill{
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:12px; font-weight:600;
+    padding:4px 10px; border-radius:20px; width:fit-content;
+  }
+  .pill.confirmado{ background: rgba(107,144,128,0.18); color:#4f7361; }
+  .pill.pendente{ background: rgba(242,169,59,0.18); color:#a3721f; }
+  .pill.recusado{ background: rgba(226,96,75,0.15); color:#b34a37; }
+  .card.on-dusk .pill.confirmado{ color:#9fd8bd; }
+  .card.on-dusk .pill.pendente{ color:#f7c473; }
+  .card.on-dusk .pill.recusado{ color:#f0a99a; }
+  .pill.pago{ background: rgba(107,144,128,0.18); color:#4f7361; }
+  .card.on-dusk .pill.pago{ color:#9fd8bd; }
+
+  .empty-msg{ padding:30px 10px; text-align:center; color:#a898c2; font-size:14px; }
+
+  .section-head{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+    margin-bottom:20px;
+  }
+
+  .two-col{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:24px;
+    align-items:start;
+  }
+  @media (max-width: 880px){ .two-col{ grid-template-columns: 1fr; } }
+
+  /* ---------- Abas: Convidados / Gastos ---------- */
+  .tabs-nav{
+    display:flex;
+    gap:6px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:24px;
+  }
+  .tab-btn{
+    background:transparent;
+    border:none;
+    color:var(--muted);
+    font-family:'Fraunces', serif;
+    font-size:19px;
+    font-weight:600;
+    padding:10px 18px 14px;
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    margin-bottom:-1px;
+    border-radius:0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition: color .15s ease;
+  }
+  .tab-btn:hover{ color:var(--paper); }
+  .tab-btn.ativo{ color:var(--amber); border-bottom-color:var(--amber); }
+  .tab-count{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    font-weight:600;
+    background: rgba(251,246,234,0.1);
+    color:var(--muted);
+    padding:2px 8px;
+    border-radius:20px;
+  }
+  .tab-btn.ativo .tab-count{ background: rgba(242,169,59,0.18); color:var(--amber); }
+  .tab-panel{ display:none; }
+  .tab-panel.ativo{ display:block; animation: apareceAba .25s ease; }
+  @keyframes apareceAba{ from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:none;} }
+  @media (prefers-reduced-motion: reduce){ .tab-panel.ativo{ animation:none; } }
+  @media (max-width:480px){
+    .tab-btn{ font-size:16px; padding:8px 12px 12px; }
+  }
+
+  .edit-banner{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background: rgba(242,169,59,0.14);
+    border:1px solid rgba(242,169,59,0.4);
+    color:var(--amber);
+    font-size:13px;
+    font-weight:600;
+    padding:9px 14px;
+    border-radius:10px;
+    margin-bottom:14px;
+  }
+  .edit-banner.ativo{ display:flex; }
+
+  footer{ text-align:center; color:var(--muted); font-size:12.5px; margin-top:60px; }
+
+  /* ---------- Modal de relatório ---------- */
+  .modal-overlay{
+    position:fixed; inset:0;
+    background: rgba(20,12,30,0.72);
+    display:none;
+    align-items:flex-start;
+    justify-content:center;
+    padding: 40px 20px;
+    overflow-y:auto;
+    z-index:100;
+  }
+  .modal-overlay.aberto{ display:flex; }
+  .modal-report{
+    background:#fff;
+    color:#221830;
+    max-width:720px;
+    width:100%;
+    border-radius:16px;
+    padding:36px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+  }
+  .modal-actions{
+    display:flex; gap:10px; justify-content:flex-end;
+    margin-top:28px;
+    padding-top:20px;
+    border-top:1px solid #eee;
+  }
+  .report-header{ margin-bottom:24px; border-bottom:2px solid #221830; padding-bottom:14px; }
+  .report-header .r-title{ font-family:'Fraunces',serif; font-size:26px; font-weight:700; margin:0; }
+  .report-header .r-sub{ font-size:13px; color:#736586; margin-top:4px; }
+  .report-group{ margin-bottom:20px; }
+  .report-group h4{
+    font-family:'IBM Plex Mono', monospace;
+    text-transform:uppercase; font-size:12px; letter-spacing:.08em;
+    color:#a3721f; margin-bottom:8px;
+  }
+  .report-row{
+    display:flex; justify-content:space-between;
+    padding:7px 0; border-bottom:1px dashed #e4dccb; font-size:14px;
+  }
+  .report-total{
+    display:flex; justify-content:space-between;
+    font-weight:700; font-size:16px; margin-top:14px; padding-top:10px;
+    border-top:2px solid #221830;
+  }
+
+  @media print{
+    body > .wrap, .modal-actions{ display:none !important; }
+    .modal-overlay{
+      position:static !important;
+      background:none !important;
+      display:block !important;
+      padding:0 !important;
+    }
+    .modal-report{ box-shadow:none !important; max-width:100%; }
+  }
+
+  ::selection{ background: var(--amber); color:var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- BARRA DE EVENTOS SALVOS -->
+  <div class="topbar">
+    <span class="eyebrow-inline">Evento atual</span>
+    <select id="seletor-eventos" onchange="carregarEvento(this.value)"></select>
+    <button class="btn-secondary btn-small" onclick="novoEvento()">+ Novo evento</button>
+    <button class="btn-primary on-dusk-btn btn-small" onclick="salvarEventoAtual()">Salvar evento</button>
+    <button class="btn-ghost on-dusk btn-small" onclick="excluirEventoAtual()">Excluir este evento</button>
+  </div>
+
+  <div class="topbar" style="justify-content:space-between;">
+    <div>
+      <span class="eyebrow-inline">Backup dos dados</span>
+      <span style="font-size:12.5px; color:var(--muted);">baixe um arquivo com tudo que foi preenchido para não perder ao abrir uma nova versão do app</span>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn-secondary btn-small" onclick="exportarDados()">⬇ Exportar dados</button>
+      <label class="btn-secondary btn-small" style="cursor:pointer; margin:0;">
+        ⬆ Importar dados
+        <input type="file" accept="application/json" onchange="importarDados(event)" style="display:none;">
+      </label>
+    </div>
+  </div>
+
+  <!-- HERO: Ficha da festa -->
+  <header class="hero card on-dusk" id="hero-card" style="width:100%;">
+    <div style="flex:1; min-width:260px;">
+      <p class="eyebrow" id="evento-tipo-eyebrow">Aniversário de família</p>
+      <h1 id="evento-nome-display">Festa dos 60 anos da Vovó Terezinha</h1>
+      <p class="sub" id="evento-local-display">Sítio Bela Vista · Estrada da Serra, km 4 · 14 de setembro de 2026, às 12h</p>
+      <p class="donos-linha" id="evento-donos-display"></p>
+    </div>
+    <div class="seal">
+      <div class="inner">
+        <div class="num" id="dias-restantes">--</div>
+        <div class="lbl">dias</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Formulário de dados do evento -->
+  <div class="card" style="margin-top:22px;">
+    <h2>Dados da festa</h2>
+    <p class="hint">Preencha as informações principais — elas atualizam a ficha acima na hora. Clique em "Salvar evento" na barra de cima para guardar tudo com o nome da festa.</p>
+    <div class="grid-form">
+      <div class="field">
+        <label for="in-nome">Nome da festa</label>
+        <input id="in-nome" type="text" oninput="atualizarEvento()">
+      </div>
+      <div class="field">
+        <label for="in-tipo">Tipo de evento</label>
+        <select id="in-tipo" onchange="atualizarEvento()">
+          <option>Aniversário de família</option>
+          <option>Casamento</option>
+          <option>Chá de bebê</option>
+          <option>Confraternização</option>
+          <option>Formatura</option>
+          <option>Réveillon / Fim de ano</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="in-local">Local (sítio / salão)</label>
+        <input id="in-local" type="text" oninput="atualizarEvento()">
+      </div>
+      <div class="field">
+        <label for="in-endereco">Endereço</label>
+        <input id="in-endereco" type="text" oninput="atualizarEvento()">
+      </div>
+      <div class="field">
+        <label for="in-data">Data</label>
+        <input id="in-data" type="date" oninput="atualizarEvento()">
+      </div>
+      <div class="field">
+        <label for="in-hora">Horário</label>
+        <input id="in-hora" type="time" oninput="atualizarEvento()">
+      </div>
+      <div class="field">
+        <label for="in-orcamento">Orçamento total (R$)</label>
+        <input id="in-orcamento" type="number" min="0" step="50" oninput="atualizarEvento()">
+      </div>
+    </div>
+  </div>
+
+  <!-- DONOS DA FESTA -->
+  <div class="card on-dusk" style="margin-top:22px;">
+    <div class="section-head">
+      <div>
+        <h2>Donos da festa / organizadores</h2>
+        <p class="hint">Quem é responsável pela festa — anfitriões, contato financeiro, etc.</p>
+      </div>
+    </div>
+
+    <div class="edit-banner" id="banner-edicao-dono">
+      <span>Editando organizador — altere os campos e salve.</span>
+      <button class="btn-ghost on-dusk" onclick="cancelarEdicaoDono()">Cancelar edição</button>
+    </div>
+
+    <div class="grid-form" style="grid-template-columns: 1.3fr 1fr 1fr auto;">
+      <div class="field">
+        <label for="d-nome">Nome</label>
+        <input id="d-nome" type="text" placeholder="Ex: Terezinha Souza">
+      </div>
+      <div class="field">
+        <label for="d-contato">Telefone / contato</label>
+        <input id="d-contato" type="text" placeholder="Ex: (31) 99999-0000">
+      </div>
+      <div class="field">
+        <label for="d-papel">Papel</label>
+        <select id="d-papel">
+          <option>Anfitrião principal</option>
+          <option>Coanfitrião</option>
+          <option>Contato financeiro</option>
+          <option>Organizador(a)</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="field" style="justify-content:flex-end;">
+        <label>&nbsp;</label>
+        <button class="btn-primary on-dusk-btn" id="btn-dono" onclick="salvarDono()">Adicionar organizador</button>
+      </div>
+    </div>
+
+    <div class="list" id="lista-donos"></div>
+  </div>
+
+  <!-- Lights divider -->
+  <div class="lights" aria-hidden="true">
+    <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+    <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+    <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+    <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+  </div>
+
+  <!-- Painel de resumo -->
+  <div class="stats">
+    <div class="stat">
+      <div class="lbl">Convidados confirmados</div>
+      <div class="val mono" id="stat-confirmados">0</div>
+    </div>
+    <div class="stat">
+      <div class="lbl">Total de pessoas esperadas</div>
+      <div class="val mono" id="stat-total-pessoas">0</div>
+    </div>
+    <div class="stat">
+      <div class="lbl">Gasto total</div>
+      <div class="val mono" id="stat-gasto">R$ 0</div>
+    </div>
+    <div class="stat" id="stat-saldo-box">
+      <div class="lbl">Saldo do orçamento</div>
+      <div class="val mono" id="stat-saldo">R$ 0</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:40px;">
+    <h2>Orçamento</h2>
+    <p class="hint" id="orcamento-texto">R$ 0 gastos de R$ 0 previstos</p>
+    <div class="budget-bar-track">
+      <div class="budget-bar-fill" id="budget-fill" style="width:0%;"></div>
+    </div>
+  </div>
+
+  <!-- Convidados e Gastos em abas -->
+  <div class="tabs-nav">
+    <button class="tab-btn ativo" id="tabbtn-convidados" onclick="mostrarAba('convidados')">
+      Convidados <span class="tab-count" id="tab-count-convidados">0</span>
+    </button>
+    <button class="tab-btn" id="tabbtn-gastos" onclick="mostrarAba('gastos')">
+      Gastos <span class="tab-count" id="tab-count-gastos">0</span>
+    </button>
+  </div>
+
+  <!-- CONVIDADOS -->
+  <div class="tab-panel ativo" id="aba-convidados">
+    <div class="card on-dusk">
+      <div class="section-head">
+        <div>
+          <h2>Convidados</h2>
+          <p class="hint">Cadastre cada família ou convidado e quantas pessoas ele representa.</p>
+        </div>
+      </div>
+
+      <div class="edit-banner" id="banner-edicao-convidado">
+        <span>Editando convidado — altere os campos e salve.</span>
+        <button class="btn-ghost on-dusk" onclick="cancelarEdicaoConvidado()">Cancelar edição</button>
+      </div>
+
+      <div class="grid-form" style="grid-template-columns: 1.4fr 0.7fr 1fr;">
+        <div class="field">
+          <label for="g-nome">Nome / família</label>
+          <input id="g-nome" type="text" placeholder="Ex: Família Oliveira">
+        </div>
+        <div class="field">
+          <label for="g-qtd">Nº de pessoas</label>
+          <input id="g-qtd" type="number" min="1" value="1">
+        </div>
+        <div class="field">
+          <label for="g-categoria">Categoria</label>
+          <select id="g-categoria">
+            <option>Família</option>
+            <option>Amigos</option>
+            <option>Trabalho</option>
+            <option>Vizinhos</option>
+            <option>Outro</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-form" style="grid-template-columns: 1fr auto;">
+        <div class="field">
+          <label for="g-status">Status</label>
+          <select id="g-status">
+            <option value="pendente">Pendente</option>
+            <option value="confirmado">Confirmado</option>
+            <option value="recusado">Recusado</option>
+          </select>
+        </div>
+        <div class="field" style="justify-content:flex-end;">
+          <label>&nbsp;</label>
+          <button class="btn-primary on-dusk-btn" id="btn-convidado" onclick="salvarConvidado()">Adicionar convidado</button>
+        </div>
+      </div>
+
+      <div class="list" id="lista-convidados" style="margin-top:6px;"></div>
+
+      <div style="margin-top:18px; text-align:right;">
+        <button class="btn-secondary btn-small" onclick="gerarRelatorioConvidados()">Gerar ficha de convidados</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GASTOS -->
+  <div class="tab-panel" id="aba-gastos">
+    <div class="card on-dusk">
+      <div class="section-head">
+        <div>
+          <h2>Gastos</h2>
+          <p class="hint">Registre cada despesa prevista ou já paga da festa.</p>
+        </div>
+      </div>
+
+      <div class="edit-banner" id="banner-edicao-gasto">
+        <span>Editando gasto — altere os campos e salve.</span>
+        <button class="btn-ghost on-dusk" onclick="cancelarEdicaoGasto()">Cancelar edição</button>
+      </div>
+
+      <div class="grid-form" style="grid-template-columns: 1.4fr 1fr;">
+        <div class="field">
+          <label for="e-desc">Descrição</label>
+          <input id="e-desc" type="text" placeholder="Ex: Buffet, Bebidas, Decoração">
+        </div>
+        <div class="field">
+          <label for="e-valor">Valor (R$)</label>
+          <input id="e-valor" type="number" min="0" step="10" placeholder="0">
+        </div>
+      </div>
+      <div class="grid-form" style="grid-template-columns: 1fr 1fr auto;">
+        <div class="field">
+          <label for="e-categoria">Categoria</label>
+          <select id="e-categoria">
+            <option>Comida e bebida</option>
+            <option>Local / aluguel</option>
+            <option>Decoração</option>
+            <option>Música / animação</option>
+            <option>Convites / lembrancinhas</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="e-status">Situação</label>
+          <select id="e-status">
+            <option value="previsto">Previsto</option>
+            <option value="pago">Pago</option>
+          </select>
+        </div>
+        <div class="field" style="justify-content:flex-end;">
+          <label>&nbsp;</label>
+          <button class="btn-primary on-dusk-btn" id="btn-gasto" onclick="salvarGasto()">Adicionar gasto</button>
+        </div>
+      </div>
+
+      <div class="list" id="lista-gastos" style="margin-top:6px;"></div>
+
+      <div style="margin-top:18px; text-align:right;">
+        <button class="btn-secondary btn-small" onclick="gerarRelatorioGastos()">Gerar ficha de gastos</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Ficha da festa — os eventos ficam guardados apenas durante esta sessão do navegador. Use "Exportar dados" antes de fechar a página ou trocar de versão do app, e "Importar dados" para recuperar tudo depois.
+  </footer>
+
+</div>
+
+<!-- MODAL DE RELATÓRIO -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-report" id="modal-report">
+    <div id="report-content"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" style="border-color:#221830; color:#221830;" onclick="window.print()">Imprimir / salvar PDF</button>
+      <button class="btn-primary" onclick="fecharRelatorio()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ==================== ESTADO ====================
+  // eventos: { "nome do evento": { evento:{}, convidados:[], gastos:[], donos:[] } }
+  let eventos = {};
+  let eventoAtualNome = "";
+
+  let editandoConvidadoId = null;
+  let editandoGastoId = null;
+  let editandoDonoId = null;
+
+  function novoIdEvento(){
+    const base = new Date();
+    base.setDate(base.getDate() + 45);
+    return {
+      evento: {
+        nome: "Nova festa",
+        tipo: "Aniversário de família",
+        local: "",
+        endereco: "",
+        data: base.toISOString().slice(0,10),
+        hora: "12:00",
+        orcamento: 0
+      },
+      convidados: [],
+      gastos: [],
+      donos: []
+    };
+  }
+
+  function seedEventoExemplo(){
+    const dt = new Date();
+    dt.setDate(dt.getDate() + 45);
+    const dados = {
+      evento: {
+        nome: "Festa dos 60 anos da Vovó Terezinha",
+        tipo: "Aniversário de família",
+        local: "Sítio Bela Vista",
+        endereco: "Estrada da Serra, km 4",
+        data: dt.toISOString().slice(0,10),
+        hora: "12:00",
+        orcamento: 4500
+      },
+      convidados: [
+        { id: crypto.randomUUID(), nome: "Família Oliveira", qtd: 4, categoria: "Família", status: "confirmado" },
+        { id: crypto.randomUUID(), nome: "Marcos e Juliana", qtd: 2, categoria: "Amigos", status: "pendente" },
+        { id: crypto.randomUUID(), nome: "Turma do trabalho", qtd: 5, categoria: "Trabalho", status: "confirmado" },
+      ],
+      gastos: [
+        { id: crypto.randomUUID(), desc: "Buffet completo", valor: 1800, categoria: "Comida e bebida", status: "pago" },
+        { id: crypto.randomUUID(), desc: "Aluguel do sítio", valor: 900, categoria: "Local / aluguel", status: "pago" },
+        { id: crypto.randomUUID(), desc: "Decoração e balões", valor: 350, categoria: "Decoração", status: "previsto" },
+      ],
+      donos: [
+        { id: crypto.randomUUID(), nome: "Terezinha Souza", contato: "(31) 99999-0000", papel: "Anfitrião principal" },
+        { id: crypto.randomUUID(), nome: "Renata Souza", contato: "(31) 98888-1234", papel: "Contato financeiro" },
+      ]
+    };
+    eventos[dados.evento.nome] = dados;
+    eventoAtualNome = dados.evento.nome;
+  }
+
+  // ==================== UTIL ====================
+  function formatMoeda(v){
+    return (v||0).toLocaleString('pt-BR', { style:'currency', currency:'BRL', maximumFractionDigits:0 });
+  }
+  function formatDataLonga(isoDate){
+    if(!isoDate) return "data a definir";
+    const [y,m,d] = isoDate.split('-').map(Number);
+    const date = new Date(y, m-1, d);
+    return date.toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' });
+  }
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str == null ? "" : str;
+    return d.innerHTML;
+  }
+  function dadosAtuais(){
+    return eventos[eventoAtualNome];
+  }
+
+  // ==================== EVENTOS (salvar / trocar / novo) ====================
+  function renderSeletorEventos(){
+    const sel = document.getElementById('seletor-eventos');
+    const nomes = Object.keys(eventos);
+    sel.innerHTML = nomes.map(n => `<option value="${escapeHtml(n)}" ${n===eventoAtualNome?'selected':''}>${escapeHtml(n)}</option>`).join('');
+  }
+
+  function novoEvento(){
+    const nomeSugerido = "Nova festa " + (Object.keys(eventos).length + 1);
+    const nome = prompt("Nome da nova festa:", nomeSugerido);
+    if(!nome) return;
+    const dados = novoIdEvento();
+    dados.evento.nome = nome;
+    eventos[nome] = dados;
+    eventoAtualNome = nome;
+    renderSeletorEventos();
+    carregarFormularios();
+    renderTudo();
+  }
+
+  function salvarEventoAtual(){
+    const nomeCampo = document.getElementById('in-nome').value.trim() || "Festa sem nome";
+    const dados = dadosAtuais();
+    // se o nome mudou, move para a nova chave
+    if(nomeCampo !== eventoAtualNome){
+      delete eventos[eventoAtualNome];
+      eventoAtualNome = nomeCampo;
+    }
+    dados.evento.nome = nomeCampo;
+    eventos[eventoAtualNome] = dados;
+    renderSeletorEventos();
+    renderTudo();
+    alert('Evento "' + nomeCampo + '" salvo com sucesso.');
+  }
+
+  function carregarEvento(nome){
+    if(!eventos[nome]) return;
+    eventoAtualNome = nome;
+    carregarFormularios();
+    renderTudo();
+  }
+
+  function excluirEventoAtual(){
+    const nomes = Object.keys(eventos);
+    if(nomes.length <= 1){
+      alert("Não é possível excluir — este é o único evento salvo.");
+      return;
+    }
+    if(!confirm('Excluir o evento "' + eventoAtualNome + '"? Esta ação não pode ser desfeita.')) return;
+    delete eventos[eventoAtualNome];
+    eventoAtualNome = Object.keys(eventos)[0];
+    renderSeletorEventos();
+    carregarFormularios();
+    renderTudo();
+  }
+
+  function exportarDados(){
+    const conteudo = JSON.stringify({ eventos, eventoAtualNome }, null, 2);
+    const blob = new Blob([conteudo], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const dataHoje = new Date().toISOString().slice(0,10);
+    a.href = url;
+    a.download = `ficha-da-festa-backup-${dataHoje}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function importarDados(event){
+    const arquivo = event.target.files[0];
+    if(!arquivo) return;
+    const leitor = new FileReader();
+    leitor.onload = function(e){
+      try{
+        const conteudo = JSON.parse(e.target.result);
+        const novosEventos = conteudo.eventos || conteudo; // aceita backup novo ou objeto de eventos puro
+        const nomes = Object.keys(novosEventos);
+        if(nomes.length === 0) throw new Error("arquivo vazio");
+
+        eventos = novosEventos;
+        eventoAtualNome = (conteudo.eventoAtualNome && novosEventos[conteudo.eventoAtualNome])
+          ? conteudo.eventoAtualNome
+          : nomes[0];
+
+        renderSeletorEventos();
+        carregarFormularios();
+        renderTudo();
+        alert(`Dados importados com sucesso! ${nomes.length} evento(s) carregado(s).`);
+      }catch(err){
+        alert("Não foi possível ler este arquivo. Verifique se é um backup gerado por este app (botão \"Exportar dados\").");
+      }
+      event.target.value = "";
+    };
+    leitor.readAsText(arquivo);
+  }
+
+  function carregarFormularios(){
+    const ev = dadosAtuais().evento;
+    document.getElementById('in-nome').value = ev.nome;
+    document.getElementById('in-tipo').value = ev.tipo;
+    document.getElementById('in-local').value = ev.local;
+    document.getElementById('in-endereco').value = ev.endereco;
+    document.getElementById('in-data').value = ev.data;
+    document.getElementById('in-hora').value = ev.hora;
+    document.getElementById('in-orcamento').value = ev.orcamento;
+  }
+
+  function atualizarEvento(){
+    const ev = dadosAtuais().evento;
+    ev.tipo = document.getElementById('in-tipo').value;
+    ev.local = document.getElementById('in-local').value || "Local a definir";
+    ev.endereco = document.getElementById('in-endereco').value || "";
+    ev.data = document.getElementById('in-data').value;
+    ev.hora = document.getElementById('in-hora').value || "";
+    ev.orcamento = parseFloat(document.getElementById('in-orcamento').value) || 0;
+    // nome não é gravado a cada tecla para não conflitar com a chave do objeto —
+    // é confirmado apenas ao clicar em "Salvar evento"
+    renderHero(document.getElementById('in-nome').value || ev.nome, ev);
+    renderResumo();
+  }
+
+  // ==================== HERO ====================
+  function renderHero(nomeExibicao, ev){
+    document.getElementById('evento-tipo-eyebrow').textContent = ev.tipo;
+    document.getElementById('evento-nome-display').textContent = nomeExibicao;
+    const horaTxt = ev.hora ? `, às ${ev.hora}` : "";
+    document.getElementById('evento-local-display').textContent =
+      `${ev.local || "Local a definir"}${ev.endereco ? ' · ' + ev.endereco : ''} · ${formatDataLonga(ev.data)}${horaTxt}`;
+
+    const donos = dadosAtuais().donos;
+    document.getElementById('evento-donos-display').textContent =
+      donos.length ? "Organizado por " + donos.map(d => d.nome).join(", ") : "";
+
+    const diasEl = document.getElementById('dias-restantes');
+    if(ev.data){
+      const hoje = new Date(); hoje.setHours(0,0,0,0);
+      const [y,m,d] = ev.data.split('-').map(Number);
+      const dataFesta = new Date(y, m-1, d);
+      const diff = Math.round((dataFesta - hoje) / 86400000);
+      diasEl.textContent = diff >= 0 ? diff : "0";
+      diasEl.nextElementSibling.textContent = diff === 0 ? "é hoje!" : (diff === 1 ? "dia" : "dias");
+    } else {
+      diasEl.textContent = "--";
+    }
+  }
+
+  // ==================== DONOS DA FESTA ====================
+  function salvarDono(){
+    const nome = document.getElementById('d-nome').value.trim();
+    const contato = document.getElementById('d-contato').value.trim();
+    const papel = document.getElementById('d-papel').value;
+    if(!nome){ document.getElementById('d-nome').focus(); return; }
+
+    const donos = dadosAtuais().donos;
+    if(editandoDonoId){
+      const d = donos.find(x => x.id === editandoDonoId);
+      d.nome = nome; d.contato = contato; d.papel = papel;
+      cancelarEdicaoDono();
+    } else {
+      donos.push({ id: crypto.randomUUID(), nome, contato, papel });
+    }
+    document.getElementById('d-nome').value = "";
+    document.getElementById('d-contato').value = "";
+    renderTudo();
+  }
+
+  function iniciarEdicaoDono(id){
+    const d = dadosAtuais().donos.find(x => x.id === id);
+    if(!d) return;
+    editandoDonoId = id;
+    document.getElementById('d-nome').value = d.nome;
+    document.getElementById('d-contato').value = d.contato;
+    document.getElementById('d-papel').value = d.papel;
+    document.getElementById('btn-dono').textContent = "Salvar edição";
+    document.getElementById('banner-edicao-dono').classList.add('ativo');
+    document.getElementById('d-nome').focus();
+  }
+
+  function cancelarEdicaoDono(){
+    editandoDonoId = null;
+    document.getElementById('d-nome').value = "";
+    document.getElementById('d-contato').value = "";
+    document.getElementById('d-papel').value = "Anfitrião principal";
+    document.getElementById('btn-dono').textContent = "Adicionar organizador";
+    document.getElementById('banner-edicao-dono').classList.remove('ativo');
+  }
+
+  function removerDono(id){
+    const dados = dadosAtuais();
+    dados.donos = dados.donos.filter(d => d.id !== id);
+    if(editandoDonoId === id) cancelarEdicaoDono();
+    renderTudo();
+  }
+
+  function renderDonos(){
+    const el = document.getElementById('lista-donos');
+    const donos = dadosAtuais().donos;
+    if(donos.length === 0){
+      el.innerHTML = `<div class="empty-msg">Nenhum organizador cadastrado ainda.</div>`;
+      return;
+    }
+    el.innerHTML = donos.map(d => `
+      <div class="row-item donos">
+        <div class="name">${escapeHtml(d.nome)}</div>
+        <div class="meta">${escapeHtml(d.contato) || "—"}</div>
+        <div class="meta">${escapeHtml(d.papel)}</div>
+        <button class="btn-edit-icon on-dusk" onclick="iniciarEdicaoDono('${d.id}')" title="Editar">✎</button>
+        <button class="btn-danger-icon on-dusk" onclick="removerDono('${d.id}')" title="Remover">✕</button>
+      </div>
+    `).join('');
+  }
+
+  // ==================== CONVIDADOS ====================
+  function salvarConvidado(){
+    const nome = document.getElementById('g-nome').value.trim();
+    const qtd = parseInt(document.getElementById('g-qtd').value) || 1;
+    const categoria = document.getElementById('g-categoria').value;
+    const status = document.getElementById('g-status').value;
+    if(!nome){ document.getElementById('g-nome').focus(); return; }
+
+    const convidados = dadosAtuais().convidados;
+    if(editandoConvidadoId){
+      const c = convidados.find(x => x.id === editandoConvidadoId);
+      c.nome = nome; c.qtd = qtd; c.categoria = categoria; c.status = status;
+      cancelarEdicaoConvidado();
+    } else {
+      convidados.push({ id: crypto.randomUUID(), nome, qtd, categoria, status });
+    }
+    document.getElementById('g-nome').value = "";
+    document.getElementById('g-qtd').value = 1;
+    renderTudo();
+  }
+
+  function iniciarEdicaoConvidado(id){
+    const c = dadosAtuais().convidados.find(x => x.id === id);
+    if(!c) return;
+    editandoConvidadoId = id;
+    document.getElementById('g-nome').value = c.nome;
+    document.getElementById('g-qtd').value = c.qtd;
+    document.getElementById('g-categoria').value = c.categoria;
+    document.getElementById('g-status').value = c.status;
+    document.getElementById('btn-convidado').textContent = "Salvar edição";
+    document.getElementById('banner-edicao-convidado').classList.add('ativo');
+    document.getElementById('g-nome').focus();
+  }
+
+  function cancelarEdicaoConvidado(){
+    editandoConvidadoId = null;
+    document.getElementById('g-nome').value = "";
+    document.getElementById('g-qtd').value = 1;
+    document.getElementById('g-categoria').value = "Família";
+    document.getElementById('g-status').value = "pendente";
+    document.getElementById('btn-convidado').textContent = "Adicionar convidado";
+    document.getElementById('banner-edicao-convidado').classList.remove('ativo');
+  }
+
+  function removerConvidado(id){
+    const dados = dadosAtuais();
+    dados.convidados = dados.convidados.filter(c => c.id !== id);
+    if(editandoConvidadoId === id) cancelarEdicaoConvidado();
+    renderTudo();
+  }
+
+  function mudarStatusConvidado(id, novoStatus){
+    const c = dadosAtuais().convidados.find(c => c.id === id);
+    if(c) c.status = novoStatus;
+    renderTudo();
+  }
+
+  function renderConvidados(){
+    const el = document.getElementById('lista-convidados');
+    const convidados = dadosAtuais().convidados;
+    if(convidados.length === 0){
+      el.innerHTML = `<div class="empty-msg">Nenhum convidado ainda. Adicione o primeiro acima.</div>`;
+      return;
+    }
+    el.innerHTML = convidados.map(c => `
+      <div class="row-item">
+        <div>
+          <div class="name">${escapeHtml(c.nome)}</div>
+          <div class="meta">${escapeHtml(c.categoria)}</div>
+        </div>
+        <div class="meta">${c.qtd} ${c.qtd === 1 ? 'pessoa' : 'pessoas'}</div>
+        <select onchange="mudarStatusConvidado('${c.id}', this.value)" style="font-size:12.5px; padding:6px 8px;">
+          <option value="pendente" ${c.status==='pendente'?'selected':''}>Pendente</option>
+          <option value="confirmado" ${c.status==='confirmado'?'selected':''}>Confirmado</option>
+          <option value="recusado" ${c.status==='recusado'?'selected':''}>Recusado</option>
+        </select>
+        <span class="pill ${c.status}">${c.status}</span>
+        <span style="display:flex; gap:2px;">
+          <button class="btn-edit-icon on-dusk" onclick="iniciarEdicaoConvidado('${c.id}')" title="Editar">✎</button>
+          <button class="btn-danger-icon on-dusk" onclick="removerConvidado('${c.id}')" title="Remover">✕</button>
+        </span>
+      </div>
+    `).join('');
+  }
+
+  // ==================== GASTOS ====================
+  function salvarGasto(){
+    const desc = document.getElementById('e-desc').value.trim();
+    const valor = parseFloat(document.getElementById('e-valor').value) || 0;
+    const categoria = document.getElementById('e-categoria').value;
+    const status = document.getElementById('e-status').value;
+    if(!desc){ document.getElementById('e-desc').focus(); return; }
+
+    const gastos = dadosAtuais().gastos;
+    if(editandoGastoId){
+      const g = gastos.find(x => x.id === editandoGastoId);
+      g.desc = desc; g.valor = valor; g.categoria = categoria; g.status = status;
+      cancelarEdicaoGasto();
+    } else {
+      gastos.push({ id: crypto.randomUUID(), desc, valor, categoria, status });
+    }
+    document.getElementById('e-desc').value = "";
+    document.getElementById('e-valor').value = "";
+    renderTudo();
+  }
+
+  function iniciarEdicaoGasto(id){
+    const g = dadosAtuais().gastos.find(x => x.id === id);
+    if(!g) return;
+    editandoGastoId = id;
+    document.getElementById('e-desc').value = g.desc;
+    document.getElementById('e-valor').value = g.valor;
+    document.getElementById('e-categoria').value = g.categoria;
+    document.getElementById('e-status').value = g.status;
+    document.getElementById('btn-gasto').textContent = "Salvar edição";
+    document.getElementById('banner-edicao-gasto').classList.add('ativo');
+    document.getElementById('e-desc').focus();
+  }
+
+  function cancelarEdicaoGasto(){
+    editandoGastoId = null;
+    document.getElementById('e-desc').value = "";
+    document.getElementById('e-valor').value = "";
+    document.getElementById('e-categoria').value = "Comida e bebida";
+    document.getElementById('e-status').value = "previsto";
+    document.getElementById('btn-gasto').textContent = "Adicionar gasto";
+    document.getElementById('banner-edicao-gasto').classList.remove('ativo');
+  }
+
+  function removerGasto(id){
+    const dados = dadosAtuais();
+    dados.gastos = dados.gastos.filter(g => g.id !== id);
+    if(editandoGastoId === id) cancelarEdicaoGasto();
+    renderTudo();
+  }
+
+  function mudarStatusGasto(id, novoStatus){
+    const g = dadosAtuais().gastos.find(g => g.id === id);
+    if(g) g.status = novoStatus;
+    renderTudo();
+  }
+
+  function renderGastos(){
+    const el = document.getElementById('lista-gastos');
+    const gastos = dadosAtuais().gastos;
+    if(gastos.length === 0){
+      el.innerHTML = `<div class="empty-msg">Nenhum gasto lançado ainda. Registre o primeiro acima.</div>`;
+      return;
+    }
+    el.innerHTML = gastos.map(g => `
+      <div class="row-item">
+        <div>
+          <div class="name">${escapeHtml(g.desc)}</div>
+          <div class="meta">${escapeHtml(g.categoria)}</div>
+        </div>
+        <div class="meta mono">${formatMoeda(g.valor)}</div>
+        <select onchange="mudarStatusGasto('${g.id}', this.value)" style="font-size:12.5px; padding:6px 8px;">
+          <option value="previsto" ${g.status==='previsto'?'selected':''}>Previsto</option>
+          <option value="pago" ${g.status==='pago'?'selected':''}>Pago</option>
+        </select>
+        <span class="pill ${g.status === 'pago' ? 'pago' : 'pendente'}">${g.status}</span>
+        <span style="display:flex; gap:2px;">
+          <button class="btn-edit-icon on-dusk" onclick="iniciarEdicaoGasto('${g.id}')" title="Editar">✎</button>
+          <button class="btn-danger-icon on-dusk" onclick="removerGasto('${g.id}')" title="Remover">✕</button>
+        </span>
+      </div>
+    `).join('');
+  }
+
+  // ==================== ABAS ====================
+  function mostrarAba(nome){
+    ['convidados','gastos'].forEach(n => {
+      document.getElementById('aba-' + n).classList.toggle('ativo', n === nome);
+      document.getElementById('tabbtn-' + n).classList.toggle('ativo', n === nome);
+    });
+  }
+
+  // ==================== RESUMO / ORÇAMENTO ====================
+  function renderResumo(){
+    const dados = dadosAtuais();
+    const confirmados = dados.convidados.filter(c => c.status === 'confirmado').reduce((s,c)=>s+c.qtd,0);
+    const totalPessoas = dados.convidados.reduce((s,c)=>s+c.qtd,0);
+    const gastoTotal = dados.gastos.reduce((s,g)=>s+g.valor,0);
+    const orcamento = dados.evento.orcamento;
+    const saldo = orcamento - gastoTotal;
+
+    document.getElementById('stat-confirmados').textContent = confirmados;
+    document.getElementById('stat-total-pessoas').textContent = totalPessoas;
+    document.getElementById('stat-gasto').textContent = formatMoeda(gastoTotal);
+    document.getElementById('stat-saldo').textContent = formatMoeda(saldo);
+
+    const saldoBox = document.getElementById('stat-saldo-box');
+    saldoBox.classList.remove('warn','good');
+    saldoBox.classList.add(saldo < 0 ? 'warn' : 'good');
+
+    document.getElementById('orcamento-texto').textContent =
+      `${formatMoeda(gastoTotal)} gastos de ${formatMoeda(orcamento)} previstos`;
+
+    const pct = orcamento > 0 ? Math.min((gastoTotal / orcamento) * 100, 100) : (gastoTotal > 0 ? 100 : 0);
+    const fill = document.getElementById('budget-fill');
+    fill.style.width = pct + "%";
+    fill.classList.toggle('over', gastoTotal > orcamento);
+
+    document.getElementById('tab-count-convidados').textContent = dados.convidados.length;
+    document.getElementById('tab-count-gastos').textContent = dados.gastos.length;
+  }
+
+  // ==================== RELATÓRIOS ====================
+  function abrirRelatorio(html){
+    document.getElementById('report-content').innerHTML = html;
+    document.getElementById('modal-overlay').classList.add('aberto');
+  }
+  function fecharRelatorio(){
+    document.getElementById('modal-overlay').classList.remove('aberto');
+  }
+
+  function gerarRelatorioConvidados(){
+    const dados = dadosAtuais();
+    const grupos = { confirmado: [], pendente: [], recusado: [] };
+    dados.convidados.forEach(c => grupos[c.status].push(c));
+
+    const totalGeral = dados.convidados.reduce((s,c)=>s+c.qtd,0);
+    const nomesGrupo = { confirmado: "Confirmados", pendente: "Pendentes", recusado: "Recusados" };
+
+    let corpo = "";
+    ["confirmado","pendente","recusado"].forEach(key => {
+      const lista = grupos[key];
+      const total = lista.reduce((s,c)=>s+c.qtd,0);
+      corpo += `<div class="report-group">
+        <h4>${nomesGrupo[key]} — ${lista.length} registro(s), ${total} pessoa(s)</h4>
+        ${ lista.length === 0 ? '<div class="report-row"><span>Nenhum convidado nesta situação.</span></div>' :
+          lista.map(c => `<div class="report-row"><span>${escapeHtml(c.nome)} (${escapeHtml(c.categoria)})</span><span>${c.qtd} ${c.qtd===1?'pessoa':'pessoas'}</span></div>`).join('')
+        }
+      </div>`;
+    });
+
+    const html = `
+      <div class="report-header">
+        <p class="r-title">Ficha de convidados</p>
+        <p class="r-sub">${escapeHtml(dados.evento.nome)} · ${formatDataLonga(dados.evento.data)} · gerado em ${new Date().toLocaleDateString('pt-BR')}</p>
+      </div>
+      ${corpo}
+      <div class="report-total"><span>Total geral de pessoas esperadas</span><span>${totalGeral}</span></div>
+    `;
+    abrirRelatorio(html);
+  }
+
+  function gerarRelatorioGastos(){
+    const dados = dadosAtuais();
+    const porCategoria = {};
+    dados.gastos.forEach(g => {
+      if(!porCategoria[g.categoria]) porCategoria[g.categoria] = [];
+      porCategoria[g.categoria].push(g);
+    });
+    const totalGeral = dados.gastos.reduce((s,g)=>s+g.valor,0);
+    const totalPago = dados.gastos.filter(g=>g.status==='pago').reduce((s,g)=>s+g.valor,0);
+
+    let corpo = "";
+    Object.keys(porCategoria).forEach(cat => {
+      const lista = porCategoria[cat];
+      const subtotal = lista.reduce((s,g)=>s+g.valor,0);
+      corpo += `<div class="report-group">
+        <h4>${escapeHtml(cat)} — ${formatMoeda(subtotal)}</h4>
+        ${lista.map(g => `<div class="report-row"><span>${escapeHtml(g.desc)} (${g.status})</span><span>${formatMoeda(g.valor)}</span></div>`).join('')}
+      </div>`;
+    });
+    if(dados.gastos.length === 0){
+      corpo = `<div class="report-group"><div class="report-row"><span>Nenhum gasto lançado ainda.</span></div></div>`;
+    }
+
+    const html = `
+      <div class="report-header">
+        <p class="r-title">Ficha de gastos</p>
+        <p class="r-sub">${escapeHtml(dados.evento.nome)} · ${formatDataLonga(dados.evento.data)} · orçamento ${formatMoeda(dados.evento.orcamento)} · gerado em ${new Date().toLocaleDateString('pt-BR')}</p>
+      </div>
+      ${corpo}
+      <div class="report-total"><span>Total pago</span><span>${formatMoeda(totalPago)}</span></div>
+      <div class="report-total"><span>Total geral (pago + previsto)</span><span>${formatMoeda(totalGeral)}</span></div>
+    `;
+    abrirRelatorio(html);
+  }
+
+  // ==================== RENDER GERAL ====================
+  function renderTudo(){
+    const dados = dadosAtuais();
+    renderHero(dados.evento.nome, dados.evento);
+    renderDonos();
+    renderConvidados();
+    renderGastos();
+    renderResumo();
+  }
+
+  // ==================== INICIALIZAÇÃO ====================
+  seedEventoExemplo();
+  renderSeletorEventos();
+  carregarFormularios();
+  renderTudo();
+</script>
+
+</body>
+</html>
